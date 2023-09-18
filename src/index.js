@@ -29,6 +29,7 @@ const memoryGame = new MemoryGame(cards);
 
 window.addEventListener('load', (event) => {
   let html = '';
+  //memoryGame.shuffleCards(cards)
   memoryGame.cards.forEach((pic) => {
     html += `
       <div class="card" data-card-name="${pic.name}">
@@ -44,8 +45,31 @@ window.addEventListener('load', (event) => {
   // Bind the click event of each element to a function
   document.querySelectorAll('.card').forEach((card) => {
     card.addEventListener('click', () => {
-      // TODO: write some code here
-      console.log(`Card clicked: ${card}`);
+      let firstCardName = ""
+      if(document.querySelectorAll('.card.turned').length < 1){
+        card.setAttribute("class","card turned firstCard")
+        firstCardName = document.querySelector(`.firstCard`).dataset.cardName
+        console.log(firstCardName)
+      } else {
+        card.setAttribute("class","card turned")
+        memoryGame.pairsClicked += 1
+        console.log(card.dataset.cardName, card.dataset.cardName === firstCardName)
+        setTimeout(() => checkIfMatch(card, firstCardName), 1000)
+      }
     });
   });
 });
+
+
+function checkIfMatch(card, firstCardName){
+  if(memoryGame.checkIfPair(card.dataset.cardName, firstCardName)){
+    memoryGame.pickedCards.push(card.dataset.cardName)
+    card.setAttribute("class","card turned")
+    document.querySelector(`.firstCard`).setAttribute("class","card turned")
+    console.log("ITS A PAIR!", firstCard)
+  } else {
+    document.querySelector(`.firstCard`).setAttribute("class","card")
+    card.setAttribute("class","card")
+        console.log("not a match", memoryGame.pickedCards)
+  }
+}
